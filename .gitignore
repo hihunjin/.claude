@@ -1,0 +1,40 @@
+# Secrets — never commit
+.env.local
+anthropic_key.sh
+*.pem
+*.key
+
+# Machine-local overrides
+settings.local.json
+
+# Claude Code runtime state (regenerated automatically)
+projects/
+sessions/
+session-env/
+shell-snapshots/
+file-history/
+paste-cache/
+telemetry/
+jobs/
+tasks/
+daemon/
+ide/
+cache/
+backups/
+plans/
+transcripts/
+downloads/
+plugins/
+debug/
+history.jsonl
+*.log
+daemon.lock
+daemon.status.json
+policy-limits.json
+remote-settings.json
+mcp-needs-auth-cache.json
+.last-cleanup
+.last-update-result.json
+
+# OS
+.DS_Store

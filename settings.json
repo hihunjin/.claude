@@ -1,0 +1,22 @@
+{
+  "model": "opus[1m]",
+  "alwaysThinkingEnabled": false,
+  "skipWorkflowUsageWarning": true,
+  "agentPushNotifEnabled": true,
+  "statusLine": {
+    "type": "command",
+    "command": "sh ~/.claude/statusline-command.sh"
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v terminal-notifier >/dev/null && terminal-notifier -title 'Claude Code' -message 'Claude Code has finished responding.' -sound Glass || true"
+          }
+        ]
+      }
+    ]
+  }
+}
