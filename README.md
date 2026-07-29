@@ -3,6 +3,8 @@
 My portable [Claude Code](https://claude.com/claude-code) setup — settings, slash commands,
 a status line, and API-switching scripts. Clone on a new machine, run `install.sh`, done.
 
+Works on macOS and Linux.
+
 ## Install
 
 ```bash
@@ -14,12 +16,16 @@ git clone <this-repo-url> ~/dotfiles/claude
 there as `<name>.bak-<timestamp>`. Because they're symlinks, a later `git pull` is enough —
 no re-install needed.
 
-Dependencies (macOS):
+Dependencies — `install.sh` tells you which of these are missing, using the right package
+manager for the machine:
 
-```bash
-brew install jq                 # required by the status line
-brew install terminal-notifier  # optional, for the Stop-hook notification
-```
+| | macOS | Debian/Ubuntu | Fedora | Arch |
+| --- | --- | --- | --- | --- |
+| Status line (**required**) | `brew install jq` | `sudo apt install jq` | `sudo dnf install jq` | `sudo pacman -S jq` |
+| Stop-hook notification (optional) | `brew install terminal-notifier` | `sudo apt install libnotify-bin` | `sudo dnf install libnotify` | `sudo pacman -S libnotify` |
+
+The notification is optional on both platforms: on macOS it falls back to `osascript`, and
+everywhere else to a terminal bell.
 
 ## What's in here
 
@@ -28,7 +34,8 @@ brew install terminal-notifier  # optional, for the Stop-hook notification
 | `settings.json` | Model, status line, Stop hook, misc preferences |
 | `statusline-command.sh` | Status line: `~/path \| branch \| model \| ctx: 42%` |
 | `commands/` | Model/effort slash commands (see below) |
-| `scripts/` | Switch between a custom API gateway and the normal subscription |
+| `scripts/notify.sh` | Cross-platform desktop notification used by the Stop hook |
+| `scripts/use_*.sh`, `*proxy*` | Switch between a custom API gateway and the normal subscription |
 | `install.sh` | Symlinks everything into `~/.claude/` |
 | `.env.local.example` | Template for machine-local secrets |
 

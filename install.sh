@@ -48,5 +48,23 @@ fi
 
 echo
 echo "Done. Machine-local overrides go in $TARGET/settings.local.json (not tracked)."
-command -v jq >/dev/null || echo "NOTE: install jq for the status line -> brew install jq"
-command -v terminal-notifier >/dev/null || echo "NOTE: optional -> brew install terminal-notifier (Stop-hook notifications)"
+
+# Dependency hints, phrased for whichever package manager is actually present.
+pkg_hint() {  # pkg_hint <brew-name> <apt-name> <dnf-name> <pacman-name>
+  if command -v brew >/dev/null 2>&1;    then echo "brew install $1"
+  elif command -v apt-get >/dev/null 2>&1;  then echo "sudo apt install $2"
+  elif command -v dnf >/dev/null 2>&1;      then echo "sudo dnf install $3"
+  elif command -v pacman >/dev/null 2>&1;   then echo "sudo pacman -S $4"
+  else echo "install $1 with your package manager"
+  fi
+}
+
+command -v jq >/dev/null 2>&1 || \
+  echo "NOTE: the status line needs jq -> $(pkg_hint jq jq jq jq)"
+
+if ! command -v terminal-notifier >/dev/null 2>&1 && ! command -v notify-send >/dev/null 2>&1; then
+  case "$(uname -s)" in
+    Darwin) echo "NOTE: optional -> $(pkg_hint terminal-notifier '' '' '') (Stop-hook notifications; osascript is used otherwise)" ;;
+    *)      echo "NOTE: optional -> $(pkg_hint '' libnotify-bin libnotify libnotify) (Stop-hook notifications)" ;;
+  esac
+fi
