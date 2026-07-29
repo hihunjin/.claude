@@ -3,6 +3,10 @@
   "alwaysThinkingEnabled": false,
   "skipWorkflowUsageWarning": true,
   "agentPushNotifEnabled": true,
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "statusLine": {
     "type": "command",
     "command": "sh ~/.claude/statusline-command.sh"
