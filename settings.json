@@ -1,6 +1,5 @@
 {
   "model": "opus[1m]",
-  "alwaysThinkingEnabled": false,
   "skipWorkflowUsageWarning": true,
   "agentPushNotifEnabled": true,
   "attribution": {
