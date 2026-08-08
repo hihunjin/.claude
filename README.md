@@ -48,7 +48,9 @@ Re-run the same prompt on a different model or reasoning effort:
 | `/h` | Haiku 4.5 | — |
 | `/s` | Sonnet 5 | medium |
 | `/sx` | Sonnet 5 | xhigh |
+| `/ol` | Opus 5 | low |
 | `/o` | Opus 5 | medium |
+| `/oh` | Opus 5 | high |
 | `/ox` | Opus 5 | xhigh |
 | `/om` | Opus 5 | max |
 
