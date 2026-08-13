@@ -43,16 +43,13 @@ everywhere else to a terminal bell.
 
 Re-run the same prompt on a different model or reasoning effort:
 
-| Command | Model | Effort |
-| --- | --- | --- |
-| `/h` | Haiku 4.5 | — |
-| `/s` | Sonnet 5 | medium |
-| `/sx` | Sonnet 5 | xhigh |
-| `/ol` | Opus 5 | low |
-| `/o` | Opus 5 | medium |
-| `/oh` | Opus 5 | high |
-| `/ox` | Opus 5 | xhigh |
-| `/om` | Opus 5 | max |
+| Model | low | medium | high | xhigh | max |
+| --- | --- | --- | --- | --- | --- |
+| Fable 5 | `/fl` | `/f` | `/fh` | `/fx` | `/fm` |
+| Sonnet 5 | `/sl` | `/s` | `/sh` | `/sx` | `/sm` |
+| Opus 5 | `/ol` | `/o` | `/oh` | `/ox` | `/om` |
+
+Plus `/h` — Haiku 4.5, which has no effort levels.
 
 Usage: `/ox refactor this module and explain the tradeoffs`
 

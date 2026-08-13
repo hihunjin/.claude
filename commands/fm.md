@@ -1,7 +1,7 @@
 ---
-description: Run this prompt on Opus 5, max effort
+description: Run this prompt on Fable 5, max effort
 argument-hint: <your prompt>
-model: opus
+model: fable
 effort: max
 context: fork
 background: true
