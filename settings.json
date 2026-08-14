@@ -10,7 +10,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "sh ~/.claude/scripts/notify.sh 'Claude Code has finished responding.'"
+            "command": "input=$(cat); cwd=$(printf '%s' \"$input\" | jq -r '.cwd // empty'); sid=$(printf '%s' \"$input\" | jq -r '.session_id // empty' | cut -c1-8); dir=${cwd##*/}; sh ~/.claude/scripts/notify.sh \"Finished responding in ${dir:-unknown dir}${sid:+ (session $sid)}\" \"Claude Code — ${dir:-?}\""
           }
         ]
       }
