@@ -13,7 +13,7 @@ TARGET="$HOME/.claude"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 
 # Items linked from the repo into ~/.claude
-ITEMS=(settings.json statusline-command.sh commands scripts)
+ITEMS=(settings.json statusline-command.sh commands scripts output-styles)
 
 if [ "$REPO" = "$TARGET" ]; then
   echo "Repo is already at $TARGET — nothing to link." >&2
