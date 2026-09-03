@@ -2,9 +2,13 @@
 # Run Claude Code against a self-hosted vLLM server, given only its address.
 #
 #   claude-vllm.sh 10.0.0.5:8000 [claude args...]
+#   claude-vllm.sh --chrome --resume        # address from VLLM_URL
 #
 # Run "claude-vllm.sh install" once to symlink this script onto your PATH as
 # `claude-vllm`, so you can drop the .claude/scripts prefix from then on.
+#
+# Every argument that is not the leading address is passed straight to claude,
+# so all of its flags (--chrome, --resume, -p, ...) work as usual.
 #
 # Discovers the served model from /v1/models, then picks a transport:
 #   direct - the server already answers Anthropic /v1/messages; talk to it as-is.
@@ -48,13 +52,19 @@ if [ -f "$ENV_FILE" ]; then
 fi
 
 # ---------------------------------------------------------------- address ----
-ADDR="${1:-${VLLM_URL:-}}"
+# The first argument is the server address only when it looks like one: a bare
+# host:port or a URL. Anything starting with "-" is a claude flag, so
+# `claude-vllm --chrome --resume` takes the address from VLLM_URL and forwards
+# every argument to claude untouched.
+case "${1:-}" in
+  ""|-*) ADDR="${VLLM_URL:-}" ;;
+  *)     ADDR="$1"; shift ;;
+esac
 if [ -z "$ADDR" ]; then
-  echo "usage: claude-vllm.sh <host:port|url> [claude args...]" >&2
-  echo "       or set VLLM_URL (and VLLM_API_KEY) in $ENV_FILE and pass nothing" >&2
+  echo "usage: claude-vllm.sh [host:port|url] [claude args...]" >&2
+  echo "       or set VLLM_URL (and VLLM_API_KEY) in $ENV_FILE and pass only claude args" >&2
   exit 1
 fi
-[ $# -gt 0 ] && shift || true
 case "$ADDR" in
   http://*|https://*) ;;
   *) ADDR="http://$ADDR" ;;
