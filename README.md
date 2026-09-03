@@ -27,6 +27,23 @@ manager for the machine:
 The notification is optional on both platforms: on macOS it falls back to `osascript`, and
 everywhere else to a terminal bell.
 
+Notifications retract themselves an hour after they are posted, so the notification centre
+does not fill up with a session's worth of them. Each one is tagged and an expiry is left in
+`~/.claude/.notify-queue`; `scripts/notify-sweep.sh` pulls expired ones back out, run both by
+`notify.sh` as it posts and by a launchd agent every five minutes (so the last notification of
+a session ages out too). Set `CLAUDE_NOTIFY_TTL` to another number of seconds to change the
+hour, or to `0` to keep notifications until they are dismissed by hand.
+
+This part is macOS-only in practice. It needs `terminal-notifier` — notifications posted
+through the `osascript` fallback cannot be retracted. On Linux it works wherever `notify-send`
+supports `-p` and `gdbus` is present, but there is no equivalent of the launchd agent, so only
+the sweep on each new notification runs. To remove the agent:
+
+```sh
+launchctl bootout "gui/$UID/com.hihunjin.claude-notify-sweep"
+rm ~/Library/LaunchAgents/com.hihunjin.claude-notify-sweep.plist
+```
+
 ## What's in here
 
 | Path | Purpose |
@@ -35,9 +52,10 @@ everywhere else to a terminal bell.
 | `statusline-command.sh` | Status line: `~/path \| branch \| model \| ctx: 42%` |
 | `commands/` | Model/effort slash commands (see below) |
 | `scripts/notify.sh` | Cross-platform desktop notification used by the Stop hook |
+| `scripts/notify-sweep.sh` | Retracts notifications once they are an hour old |
 | `scripts/use_*.sh`, `*proxy*` | Switch between a custom API gateway and the normal subscription |
 | `scripts/claude-vllm.sh` | Run Claude Code against a self-hosted vLLM server, given only its address |
-| `install.sh` | Symlinks everything into `~/.claude/` |
+| `install.sh` | Symlinks everything into `~/.claude/`, loads the notification-sweep agent |
 | `.env.local.example` | Template for machine-local secrets |
 
 ### Slash commands

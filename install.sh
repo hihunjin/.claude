@@ -46,6 +46,51 @@ if [ ! -f "$TARGET/.env.local" ]; then
   echo "created    $TARGET/.env.local (fill in your values; it is gitignored)"
 fi
 
+# macOS: a launchd agent sweeps expired desktop notifications every 5 minutes,
+# so the last notification of a session ages out of the notification centre too
+# (notify.sh can only sweep while it is posting something new).
+#
+# The agent runs from a copy under ~/Library rather than from the repo: launchd
+# agents are refused access to TCC-protected folders such as ~/Documents or
+# ~/Desktop, which is where the repo may well be checked out. Re-run this
+# script after changing scripts/notify-sweep.sh to refresh the copy.
+if [ "$(uname -s)" = "Darwin" ]; then
+  AGENT_LABEL="com.hihunjin.claude-notify-sweep"
+  AGENT_PLIST="$HOME/Library/LaunchAgents/$AGENT_LABEL.plist"
+  AGENT_DIR="$HOME/Library/Application Support/claude-notify-sweep"
+  AGENT_BIN="$AGENT_DIR/notify-sweep.sh"
+
+  mkdir -p "$AGENT_DIR" "$HOME/Library/LaunchAgents"
+  cp "$REPO/scripts/notify-sweep.sh" "$AGENT_BIN"
+  chmod +x "$AGENT_BIN"
+
+  cat > "$AGENT_PLIST" <<PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>$AGENT_LABEL</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/sh</string>
+    <string>$AGENT_BIN</string>
+  </array>
+  <key>StartInterval</key>
+  <integer>300</integer>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>ProcessType</key>
+  <string>Background</string>
+</dict>
+</plist>
+PLIST
+
+  launchctl bootout "gui/$UID/$AGENT_LABEL" 2>/dev/null || true
+  launchctl bootstrap "gui/$UID" "$AGENT_PLIST" 2>/dev/null || launchctl load "$AGENT_PLIST" 2>/dev/null || true
+  echo "loaded     $AGENT_LABEL (retracts notifications once they are an hour old)"
+fi
+
 echo
 echo "Done. Machine-local overrides go in $TARGET/settings.local.json (not tracked)."
 
